@@ -13,7 +13,7 @@ const Contact = require("./models/Contact.model");
 const Booking = require("./models/Booking");
 
 const app = express();
-const PORT = 8001;
+const PORT = process.env.PORT||8001;
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
@@ -34,6 +34,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 let savedTotalPrice = 0; 
 let tempUserEmail = null;
+
 
 // Register endpoint
 app.post("/api/register", async (req, res) => {
