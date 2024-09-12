@@ -17,6 +17,7 @@ const app = express();
 const PORT = process.env.PORT || 8001;
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+
 app.use(express.json());
 
 // Session configuration
