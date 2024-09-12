@@ -25,6 +25,7 @@
     "otp-generator": "^4.0.1",
     "pdfkit": "^0.15.0",
     "razorpay": "^2.9.4",
+    "session-memory-store": "^0.2.2",
     "stripe": "^16.8.0",
     "twilio": "^5.2.3"
   }
