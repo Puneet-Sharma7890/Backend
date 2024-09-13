@@ -136,7 +136,7 @@ app.post('/api/send-email', async (req, res) => {
       subject: 'Your OTP Code',
       html: `<b>Your OTP for Chardham tour and travel is ${otp}</b>`,
     });
-
+    console.log(otp)
     res.json({ status: 'ok', message: 'Email sent successfully', otp });
   } catch (error) {
     console.error('Error sending email:', error);
@@ -206,7 +206,7 @@ app.get('/api/contactdetails', async (req, res) => {
     res.status(200).json(contacts);
   } catch (error) {
     console.error('Error fetching contact details:', error);
-    res.status(500).json({ message: 'Failed to fetch contact details.' });
+    res.status(500).json({ message: 'Failed to fetch contact details for now.' });
   }
 });
 
