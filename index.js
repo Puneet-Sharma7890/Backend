@@ -27,10 +27,11 @@ app.use(
     store: new sessionMemoryStore(),
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false, // Change this to false to avoid unnecessary empty session objects
     cookie: { maxAge: 3600000 },
   })
 );
+
 
 const mongoURI = process.env.MONGODB_URI;
 
@@ -47,6 +48,8 @@ mongoose
 console.log("MongoDB URI:", process.env.MONGODB_URI);
 
 // Register endpoint
+let savedTotalPrice = 0;
+let tempemail = '';
 app.post("/api/register", async (req, res) => {
   try {
     const { name, email, password, recaptcha } = req.body;
@@ -64,6 +67,7 @@ app.post("/api/register", async (req, res) => {
     if (data.success) {
       await User.create({ name, email, password });
       req.session.user = { name, email };
+      tempemail=email
       res.json({ status: "ok", register: req.session.user });
     } else {
       res.json({
@@ -93,6 +97,7 @@ app.post("/api/login", async (req, res) => {
         { expiresIn: "1h" }
       );
       req.session.user = user.email;
+      tempemail=user.email;
       res.json({ status: "ok", user: token, login: req.session.user });
     } else {
       res.json({ status: "error", user: false });
@@ -126,10 +131,10 @@ app.post("/api/create-checkout-session", async (req, res) => {
       )}`,
       cancel_url: "http://localhost:3000/cancel",
     });
-
-    if (req.session.user) {
+    console.log(tempemail)
+    if (tempemail) {
       const currentDate = new Date();
-      const booking = new Booking({ email: req.session.user, currentDate });
+      const booking = new Booking({ email: tempemail, currentDate });
       await booking.save();
     }
 
@@ -241,6 +246,16 @@ app.get("/api/contactdetails", async (req, res) => {
   }
 });
 
+//check token
+app.post("/api/checktoken",(req,res)=>{
+  const token = req.body.token;
+  if(token){
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    res.json({message:"Token is valid",decoded});
+    }else{
+      res.json({message:"Token is invalid"});
+      }
+})
 // Start server
 app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
